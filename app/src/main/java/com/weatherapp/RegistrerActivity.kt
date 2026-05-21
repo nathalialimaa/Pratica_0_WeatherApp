@@ -25,28 +25,26 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
 
-
-
-class LoginActivity : ComponentActivity() {
+class RegistrerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LoginPage()
+            RegistrerPage()
 
         }
     }
-    @Preview(showBackground = true)
+
     @Composable
-    fun LoginPage(modifier: Modifier = Modifier) {
+    fun RegistrerPage(modifier: Modifier = Modifier) {
+        var name by rememberSaveable { mutableStateOf("") }
         var email by rememberSaveable { mutableStateOf("") }
         var password by rememberSaveable { mutableStateOf("") }
-        //val context = LocalContext.current
+        var repetirsenha by rememberSaveable { mutableStateOf("") }
         val activity = LocalContext.current as Activity
         Column(
 
@@ -57,8 +55,14 @@ class LoginActivity : ComponentActivity() {
             val modifier = modifier.fillMaxWidth(fraction = 0.9f)
 
             Text(
-                text = "WeatherApp",
+                text = "Registre-se!",
                 fontSize = 24.sp
+            )
+            OutlinedTextField(
+                value = name,
+                label = { Text(text = "Digite o seu nome!") },
+                modifier = modifier,
+                onValueChange = { name = it }
             )
 
             Spacer(modifier = Modifier.size(12.dp))
@@ -82,39 +86,47 @@ class LoginActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.size((12.dp)))
 
+            OutlinedTextField(
+                value = repetirsenha,
+                label = { Text(text = "Repita sua senha") },
+                modifier = modifier,
+                onValueChange = { repetirsenha = it }
+            )
+
+            Spacer(modifier = Modifier.size((12.dp)))
+
+
+
             Row(modifier = modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(  onClick = {
                     Toast.makeText(activity,
-                        "Login OK!",
+                        "Registro OK!",
                         Toast.LENGTH_LONG
                     ).show()
                     activity.startActivity(
                         Intent(activity, MainActivity::class.java)
                             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     )
-                }, enabled = email.isNotEmpty() && password.isNotEmpty()
+                }, enabled = name.isNotEmpty() &&
+                            email.isNotEmpty() &&
+                            password.isNotEmpty() &&
+                            repetirsenha.isNotEmpty() &&
+                            password == repetirsenha
                 ) {
-                    Text("Login")
-                }
-                Button(  onClick = {
-                    activity.startActivity(
-                        Intent(activity, RegistrerActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    )
-                }
-                ) {
-                    Text("Cadastre-se")
+                    Text("Registre-se!")
                 }
                 Button(
-                    onClick = { email = ""; password = "" }
+                    onClick = { name= ""; email = ""; password = ""; repetirsenha="" }
                 ) {
                     Text("Limpar")
                 }
             }
         }
+
+
     }
 
 }
