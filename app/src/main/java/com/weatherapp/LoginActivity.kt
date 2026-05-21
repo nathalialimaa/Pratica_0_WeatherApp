@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.Intent
 
 
 
@@ -45,7 +46,8 @@ class LoginActivity : ComponentActivity() {
     fun LoginPage(modifier: Modifier = Modifier) {
         var email by rememberSaveable { mutableStateOf("") }
         var password by rememberSaveable { mutableStateOf("") }
-        val context = LocalContext.current
+        //val context = LocalContext.current
+        val activity = LocalContext.current as Activity
         Column(
 
             modifier = modifier.padding(24.dp).fillMaxSize().size(12.dp),
@@ -55,7 +57,7 @@ class LoginActivity : ComponentActivity() {
             val modifier = modifier.fillMaxWidth(fraction = 0.9f)
 
             Text(
-                text = "Bem-vindo/a!",
+                text = "WeatherApp",
                 fontSize = 24.sp
             )
 
@@ -85,8 +87,14 @@ class LoginActivity : ComponentActivity() {
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(  onClick = {
-                    Toast.makeText(context, "Login OK!", Toast.LENGTH_LONG).show()
-
+                    Toast.makeText(activity,
+                        "Login OK!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    activity.startActivity(
+                        Intent(activity, MainActivity::class.java)
+                            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    )
                 }, enabled = email.isNotEmpty() && password.isNotEmpty()
                 ) {
                     Text("Login")
@@ -99,4 +107,5 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
+
 }
