@@ -28,6 +28,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
+import com.weatherapp.ui.DataField
+import com.weatherapp.ui.PasswordField
 
 class RegistrerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,37 +60,36 @@ class RegistrerActivity : ComponentActivity() {
                 text = "Registre-se!",
                 fontSize = 24.sp
             )
-            OutlinedTextField(
+            DataField(
                 value = name,
-                label = { Text(text = "Digite o seu nome!") },
+                label = "Digite seu nome",
                 modifier = modifier,
                 onValueChange = { name = it }
             )
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            OutlinedTextField(
+            DataField(
                 value = email,
-                label = { Text(text = "Digite seu e-mail") },
+                label = "Digite seu e-mail",
                 modifier = modifier,
                 onValueChange = { email = it }
             )
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            OutlinedTextField(
+            PasswordField(
                 value = password,
-                label = { Text(text = "Digite sua senha") },
+                label = "Digite sua senha",
                 modifier = modifier,
-                onValueChange = { password = it },
-                visualTransformation = PasswordVisualTransformation()
+                onValueChange = { password = it }
             )
 
             Spacer(modifier = Modifier.size((12.dp)))
 
-            OutlinedTextField(
+            PasswordField(
                 value = repetirsenha,
-                label = { Text(text = "Repita sua senha") },
+                label = "Repita sua senha",
                 modifier = modifier,
                 onValueChange = { repetirsenha = it }
             )

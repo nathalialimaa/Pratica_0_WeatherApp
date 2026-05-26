@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
+import com.weatherapp.ui.DataField
+import com.weatherapp.ui.PasswordField
 
 
 
@@ -63,21 +65,20 @@ class LoginActivity : ComponentActivity() {
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            OutlinedTextField(
+            DataField(
                 value = email,
-                label = { Text(text = "Digite seu e-mail") },
+                label = "Digite seu e-mail",
                 modifier = modifier,
                 onValueChange = { email = it }
             )
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            OutlinedTextField(
+            PasswordField(
                 value = password,
-                label = { Text(text = "Digite sua senha") },
+                label = "Digite sua senha",
                 modifier = modifier,
-                onValueChange = { password = it },
-                visualTransformation = PasswordVisualTransformation()
+                onValueChange = { password = it }
             )
 
             Spacer(modifier = Modifier.size((12.dp)))
