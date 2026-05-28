@@ -22,20 +22,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.model.City
+import com.weatherapp.viewmodel.MainViewModel
 
-private fun getCities() = List(20) { i ->
-    City(
-        name = "Cidade $i",
-        weather = "Carregando clima..."
-    )
-}
+
 
 @Composable
-fun ListPage(modifier: Modifier = Modifier) {
-
-    val cityList = remember {
-        getCities().toMutableStateList()
-    }
+fun ListPage(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel
+    ) {
+    val cityList = viewModel.cities
 
     val activity = LocalContext.current as Activity
 
@@ -67,6 +63,8 @@ fun ListPage(modifier: Modifier = Modifier) {
                         "Remover: ${city.name}",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    viewModel.remove(city)
 
                 }
             )
