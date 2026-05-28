@@ -11,8 +11,13 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.weatherapp.ui.CityDialog
 import com.weatherapp.ui.nav.BottomNavBar
 import com.weatherapp.ui.nav.BottomNavItem
 import com.weatherapp.ui.nav.MainNavHost
@@ -29,8 +34,24 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val navController = rememberNavController()
+            var showDialog by remember { mutableStateOf(false) }
 
             WeatherAppTheme {
+                if (showDialog) {
+
+                    CityDialog(
+                        onDismiss = { showDialog = false },
+
+                        onConfirm = { city ->
+
+                            if (city.isNotBlank()) {
+                                viewModel.add(city)
+                            }
+
+                            showDialog = false
+                        }
+                    )
+                }
 
                 Scaffold(
 
@@ -77,7 +98,7 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
 
                         FloatingActionButton(
-                            onClick = { }
+                            onClick = { showDialog = true }
                         ) {
 
                             Icon(
