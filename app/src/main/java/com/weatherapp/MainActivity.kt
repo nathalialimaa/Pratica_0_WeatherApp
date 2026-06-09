@@ -28,6 +28,8 @@ import com.weatherapp.ui.nav.Route
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.navigation.NavDestination.Companion.hasRoute
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
@@ -61,7 +63,6 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-
                 Scaffold(
 
                     topBar = {
@@ -131,4 +132,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
