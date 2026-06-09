@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
+    id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -41,6 +42,11 @@ android {
 }
 
 dependencies {
+    // Google maps
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+// Google maps for compose
+    implementation("com.google.maps.android:maps-compose:8.3.0")
     implementation("androidx.navigation:navigation-compose:2.9.8")
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.material3)
