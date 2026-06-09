@@ -29,6 +29,7 @@ import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.model.User
 
 
 
@@ -72,7 +73,8 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
 
                             title = {
-                                Text("Bem-vindo/a!")
+                                val name = viewModel.user?.name?:"[carregando...]"
+                                Text("Bem-vindo/a! $name")
                             },
 
                             actions = {
