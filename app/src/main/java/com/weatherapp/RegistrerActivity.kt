@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import android.content.Intent
 import com.weatherapp.ui.DataField
 import com.weatherapp.ui.PasswordField
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class RegistrerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,14 +105,29 @@ class RegistrerActivity : ComponentActivity() {
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(  onClick = {
-                    Toast.makeText(activity,
-                        "Registro OK!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    activity.startActivity(
-                        Intent(activity, MainActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    )
+                    Firebase.auth
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(activity) { task ->
+
+                            if (task.isSuccessful) {
+
+                                Toast.makeText(
+                                    activity,
+                                    "Registro OK!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                activity.finish()
+
+                            } else {
+
+                                Toast.makeText(
+                                    activity,
+                                    "Registro FALHOU!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
                 }, enabled = name.isNotEmpty() &&
                             email.isNotEmpty() &&
                             password.isNotEmpty() &&

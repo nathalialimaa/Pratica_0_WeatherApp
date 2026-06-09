@@ -27,6 +27,8 @@ import com.weatherapp.ui.nav.MainNavHost
 import com.weatherapp.ui.nav.Route
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.navigation.NavDestination.Companion.hasRoute
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 
@@ -76,13 +78,15 @@ class MainActivity : ComponentActivity() {
                             actions = {
 
                                 IconButton(
-                                    onClick = { finish() }
+                                    onClick = {
+
+                                        Firebase.auth.signOut()
+
+                                        finish()
+                                    }
                                 ) {
-
                                     Icon(
-                                        imageVector =
-                                            Icons.AutoMirrored.Filled.ExitToApp,
-
+                                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                         contentDescription = "Sair"
                                     )
                                 }
