@@ -98,14 +98,14 @@ class LoginActivity : ComponentActivity() {
 
                                 if (task.isSuccessful) {
 
-                                    activity.startActivity(
-                                        Intent(
-                                            activity,
-                                            MainActivity::class.java
-                                        ).setFlags(
-                                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-                                        )
-                                    )
+                                    //activity.startActivity(
+                                        //Intent(
+                                           // activity,
+                                            //MainActivity::class.java
+                                       // ).setFlags(
+                                        //    Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                        //)
+                                    //)
 
                                     Toast.makeText(
                                         activity,

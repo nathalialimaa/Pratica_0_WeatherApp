@@ -117,7 +117,6 @@ class RegistrerActivity : ComponentActivity() {
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                activity.finish()
 
                             } else {
 
