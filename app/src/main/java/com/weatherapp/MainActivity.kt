@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.weatherapp.ui.CityDialog
@@ -29,8 +30,9 @@ import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.db.fb.FBDatabase
 import com.weatherapp.model.User
-
+import com.weatherapp.viewmodel.MainViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +44,10 @@ class MainActivity : ComponentActivity() {
         val viewModel : MainViewModel by viewModels()
 
         setContent {
+            val fbDB = remember { FBDatabase() }
+            val viewModel : MainViewModel = viewModel(
+                factory = MainViewModelFactory(fbDB)
+            )
 
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }

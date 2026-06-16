@@ -32,6 +32,9 @@ import com.weatherapp.ui.DataField
 import com.weatherapp.ui.PasswordField
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.db.fb.FBDatabase
+import com.weatherapp.db.fb.toFBUser
+import com.weatherapp.model.User
 
 class RegistrerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +113,12 @@ class RegistrerActivity : ComponentActivity() {
                         .addOnCompleteListener(activity) { task ->
 
                             if (task.isSuccessful) {
+                                FBDatabase().register(
+                                    User(
+                                        name = name,
+                                        email = email
+                                    ).toFBUser()
+                                )
 
                                 Toast.makeText(
                                     activity,
