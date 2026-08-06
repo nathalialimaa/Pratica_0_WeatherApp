@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.model.City
+import com.weatherapp.model.Weather
 import com.weatherapp.viewmodel.MainViewModel
 
 
@@ -46,6 +47,7 @@ fun ListPage(
             CityItem(
 
                 city = city,
+                weather = viewModel.weather(city.name),
 
                 onClick = {
 
@@ -75,10 +77,16 @@ fun ListPage(
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc =
+        if (weather == Weather.LOADING)
+            "Carregando clima..."
+        else
+            weather.desc
 
     Row(
         modifier = modifier
@@ -106,7 +114,7 @@ fun CityItem(
             )
 
             Text(
-                text = city.weather ?: "Carregando clima...",
+                text = desc,
                 fontSize = 16.sp
             )
         }

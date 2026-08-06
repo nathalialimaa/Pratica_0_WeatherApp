@@ -18,6 +18,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.weatherapp.model.Weather
 import com.weatherapp.viewmodel.MainViewModel
 
 @Composable
@@ -96,18 +97,28 @@ fun MapPage(
 
         // Marcadores vindos da lista de favoritos
 
-        viewModel.cities.forEach { city ->
 
-            city.location?.let { location ->
+        viewModel.cities.forEach {
 
-                val markerState = remember(location) {
-                    MarkerState(position = location)
+            if (it.location != null) {
+
+                val weather =
+                    viewModel.weather(it.name)
+
+                val desc =
+                    if (weather == Weather.LOADING)
+                        "Carregando clima..."
+                    else
+                        weather.desc
+
+                val markerState = remember(it.location) {
+                    MarkerState(position = it.location!!)
                 }
 
                 Marker(
                     state = markerState,
-                    title = city.name,
-                    snippet = location.toString()
+                    title = it.name,
+                    snippet = desc
                 )
             }
         }
