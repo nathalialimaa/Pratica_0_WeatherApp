@@ -11,9 +11,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.weatherapp.ui.nav.BottomNavItem
+import com.weatherapp.viewmodel.MainViewModel
 
 @Composable
 fun BottomNavBar(
+    viewModel: MainViewModel,
     navController: NavHostController,
     items: List<BottomNavItem>
 ) {
@@ -22,11 +24,7 @@ fun BottomNavBar(
         contentColor = Color.Black
     ) {
 
-        val navBackStackEntry by
-        navController.currentBackStackEntryAsState()
 
-        val currentRoute =
-            navBackStackEntry?.destination?.route
 
         items.forEach { item ->
 
@@ -47,26 +45,10 @@ fun BottomNavBar(
 
                 alwaysShowLabel = true,
 
-                selected =
-                    currentRoute == item.route::class.qualifiedName,
+                selected = viewModel.page == item.route,
 
                 onClick = {
-
-                    navController.navigate(item.route) {
-
-                        navController.graph
-                            .startDestinationRoute
-                            ?.let {
-
-                                popUpTo(it) {
-                                    saveState = true
-                                }
-
-                                restoreState = true
-                            }
-
-                        launchSingleTop = true
-                    }
+                    viewModel.page = item.route
                 }
             )
         }

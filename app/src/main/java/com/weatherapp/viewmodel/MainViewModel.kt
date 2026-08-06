@@ -17,6 +17,9 @@ import com.weatherapp.ui.ListPage
 import com.weatherapp.api.WeatherService
 import com.weatherapp.api.toWeather
 import com.weatherapp.model.Weather
+import com.weatherapp.api.toForecast
+import com.weatherapp.model.Forecast
+import com.weatherapp.ui.nav.Route
 
 
 class MainViewModel(
@@ -31,6 +34,24 @@ class MainViewModel(
 
     private val _weather =
         mutableStateMapOf<String, Weather>()
+
+    private val _forecast =
+        mutableStateMapOf<String, List<Forecast>?>()
+
+    private var _city =
+        mutableStateOf<String?>(null)
+    private var _page = mutableStateOf<Route>(Route.Home)
+
+    var page: Route
+        get() = _page.value
+        set(value) {
+            _page.value = value
+        }
+    var city: String?
+        get() = _city.value
+        set(value) {
+            _city.value = value
+        }
 
     private val _user = mutableStateOf<User?> (null)
     val user : User?
@@ -103,9 +124,7 @@ class MainViewModel(
 
     fun weather(name: String) =
         _weather.getOrPut(name) {
-
             loadWeather(name)
-
             Weather.LOADING
         }
 
@@ -114,10 +133,28 @@ class MainViewModel(
         service.getWeather(name) { apiWeather ->
 
             apiWeather?.let {
-
-                _weather[name] =
-                    apiWeather.toWeather()
+                _weather[name] = apiWeather.toWeather()
             }
         }
     }
+
+    fun forecast(name: String) =
+        _forecast.getOrPut(name) {
+
+            loadForecast(name)
+
+            emptyList()
+        }
+
+    private fun loadForecast(name: String) {
+
+        service.getForecast(name) { apiForecast ->
+
+            apiForecast?.let {
+
+                _forecast[name] = apiForecast.toForecast()
+            }
+        }
+    }
+
 }

@@ -1,5 +1,4 @@
 package com.weatherapp
-import androidx.activity.viewModels
 import com.weatherapp.viewmodel.MainViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,7 +34,7 @@ import com.weatherapp.model.User
 import com.weatherapp.viewmodel.MainViewModelFactory
 import com.weatherapp.api.WeatherService
 import androidx.lifecycle.viewmodel.compose.viewModel
-
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -43,7 +42,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel : MainViewModel by viewModels()
 
         setContent {
             val fbDB = remember { FBDatabase() }
@@ -118,6 +116,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         BottomNavBar(
+                            viewModel = viewModel,
                             navController = navController,
                             items = items
                         )
@@ -145,6 +144,23 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             viewModel = viewModel
                         )
+
+                        LaunchedEffect(viewModel.page) {
+
+                            navController.navigate(viewModel.page) {
+
+                                navController.graph.startDestinationRoute?.let {
+
+                                    popUpTo(it) {
+                                        saveState = true
+                                    }
+
+                                    restoreState = true
+                                }
+
+                                launchSingleTop = true
+                            }
+                        }
                     }
                 }
             }
