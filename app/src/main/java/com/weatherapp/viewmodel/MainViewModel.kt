@@ -13,6 +13,7 @@ import com.weatherapp.db.fb.toFBCity
 import com.weatherapp.model.City
 import com.weatherapp.model.User
 import com.weatherapp.ui.ListPage
+import com.weatherapp.api.WeatherService
 
 private fun getCities() = List(20) { i ->
     City(
@@ -21,8 +22,10 @@ private fun getCities() = List(20) { i ->
     )
 }
 
-class MainViewModel (private val db: FBDatabase): ViewModel(),
-    FBDatabase.Listener {
+class MainViewModel(
+    private val db: FBDatabase,
+    private val service: WeatherService
+) : ViewModel(), FBDatabase.Listener {
     private val _cities = mutableStateListOf<City>()
     val cities
         get() = _cities.toList()
@@ -39,8 +42,36 @@ class MainViewModel (private val db: FBDatabase): ViewModel(),
         db.remove(city.toFBCity())
     }
 
-    fun add(name: String, location : LatLng? = null) {
-        db.add(City(name = name, location = location).toFBCity())
+    fun addCity(name: String) {
+
+        service.getLocation(name) { lat, lng ->
+
+            if (lat != null && lng != null) {
+
+                db.add(
+                    City(
+                        name = name,
+                        location = LatLng(lat, lng)
+                    ).toFBCity()
+                )
+            }
+        }
+    }
+
+    fun addCity(location: LatLng) {
+
+        service.getName(location.latitude, location.longitude) { name ->
+
+            if (name != null) {
+
+                db.add(
+                    City(
+                        name = name,
+                        location = location
+                    ).toFBCity()
+                )
+            }
+        }
     }
 
     override fun onUserLoaded(user: FBUser) {

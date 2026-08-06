@@ -57,11 +57,8 @@ fun MapPage(
 
         cameraPositionState = camPosState,
 
-        onMapClick = {
-            viewModel.add(
-                "Cidade@${it.latitude}:${it.longitude}",
-                location = it
-            )
+        onMapClick = { location ->
+            viewModel.addCity(location)
         },
 
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),

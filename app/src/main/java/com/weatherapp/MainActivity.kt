@@ -33,6 +33,8 @@ import com.google.firebase.auth.auth
 import com.weatherapp.db.fb.FBDatabase
 import com.weatherapp.model.User
 import com.weatherapp.viewmodel.MainViewModelFactory
+import com.weatherapp.api.WeatherService
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,8 +47,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val fbDB = remember { FBDatabase() }
-            val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB)
+            val weatherService = remember { WeatherService() }
+
+            val viewModel: MainViewModel = viewModel(
+                factory = MainViewModelFactory(
+                    fbDB,
+                    weatherService
+                )
             )
 
             val navController = rememberNavController()
@@ -65,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         onConfirm = { city ->
 
                             if (city.isNotBlank()) {
-                                viewModel.add(city)
+                                viewModel.addCity(city)
                             }
 
                             showDialog = false
