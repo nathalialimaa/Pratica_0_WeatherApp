@@ -30,6 +30,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImage
+import com.weatherapp.R
 
 @Composable
 fun HomePage(
@@ -64,10 +68,11 @@ fun HomePage(
 
             Row {
 
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    contentDescription = null,
-                    modifier = Modifier.size(150.dp)
+                AsyncImage(
+                    model = viewModel.weather(viewModel.city!!).imgUrl,
+                    modifier = modifier.size(140.dp),
+                    error = painterResource(id = R.drawable.loading),
+                    contentDescription = "Imagem"
                 )
 
                 Column {
