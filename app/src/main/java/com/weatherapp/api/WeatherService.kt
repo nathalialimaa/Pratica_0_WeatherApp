@@ -6,8 +6,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import coil.ImageLoader
+import coil.request.ImageRequest
 
-class WeatherService {
+class WeatherService(private val context: Context)  {
+
+    private val imageLoader = ImageLoader.Builder(context)
+        .allowHardware(false)
+        .build()
 
     private var weatherAPI: WeatherServiceAPI
 
@@ -127,5 +136,26 @@ class WeatherService {
         enqueue(call) {
             onResponse.invoke(it)
         }
+    }
+
+    fun getBitmap(
+        imgUrl: String,
+        onResponse: (Bitmap?) -> Unit
+    ) {
+        val request = ImageRequest.Builder(context)
+            .data(imgUrl)
+            .allowHardware(false)
+            .target(
+                onSuccess = { drawable ->
+                    val bitmap = (drawable as BitmapDrawable).bitmap
+                    onResponse(bitmap)
+                },
+                onError = {
+                    onResponse(null)
+                }
+            )
+            .build()
+
+        imageLoader.enqueue(request)
     }
 }

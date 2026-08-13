@@ -20,6 +20,12 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.weatherapp.model.Weather
 import com.weatherapp.viewmodel.MainViewModel
+import android.graphics.drawable.BitmapDrawable
+import androidx.core.graphics.drawable.toBitmap
+import com.weatherapp.R
+import android.graphics.Bitmap
+import androidx.core.graphics.scale
+
 
 @Composable
 fun MapPage(
@@ -98,12 +104,20 @@ fun MapPage(
         // Marcadores vindos da lista de favoritos
 
 
-        viewModel.cities.forEach {
+        viewModel.cities.forEach { city ->
 
-            if (it.location != null) {
+            if (city.location != null) {
 
-                val weather =
-                    viewModel.weather(it.name)
+                val weather = viewModel.weather(city.name)
+
+                val image = weather.bitmap
+                    ?: ContextCompat.getDrawable(
+                        context,
+                        R.drawable.loading
+                    )!!.toBitmap()
+
+                val marker = BitmapDescriptorFactory
+                    .fromBitmap(image.scale(120, 120))
 
                 val desc =
                     if (weather == Weather.LOADING)
@@ -111,13 +125,16 @@ fun MapPage(
                     else
                         weather.desc
 
-                val markerState = remember(it.location) {
-                    MarkerState(position = it.location!!)
+                val markerState = remember(city.name, city.location) {
+                    MarkerState(
+                        position = city.location!!
+                    )
                 }
 
                 Marker(
                     state = markerState,
-                    title = it.name,
+                    icon = marker,
+                    title = city.name,
                     snippet = desc
                 )
             }
