@@ -1,0 +1,128 @@
+package com.weatherapp.monitor
+
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import com.weatherapp.MainActivity
+import com.weatherapp.R
+
+class ForecastWorker(
+    context: Context,
+    params: WorkerParameters
+) : Worker(context, params) {
+
+    companion object {
+        private const val CHANNEL_ID = "WEATHER_APP"
+    }
+
+    override fun doWork(): Result {
+
+        val cityName =
+            inputData.getString("city")
+                ?: return Result.failure()
+
+        showNotification(cityName)
+
+        return Result.success()
+    }
+
+    private fun showNotification(cityName: String) {
+
+        val newIntent =
+            Intent(
+                this.applicationContext,
+                MainActivity::class.java
+            )
+
+        newIntent.addFlags(
+            Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+        )
+
+        newIntent.putExtra("city", cityName)
+
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this.applicationContext,
+                cityName.hashCode(),
+                newIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or
+                        PendingIntent.FLAG_IMMUTABLE
+            )
+
+        createNotificationChannel()
+
+        val builder =
+            NotificationCompat.Builder(
+                this.applicationContext,
+                CHANNEL_ID
+            )
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(cityName)
+                .setContentText(
+                    "Clique para ver previsão do tempo atualizada."
+                )
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+
+        val notificationManager =
+            NotificationManagerCompat.from(
+                this.applicationContext
+            )
+
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        notificationManager.notify(
+            cityName.hashCode(),
+            builder.build()
+        )
+    }
+
+    private fun createNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val name = "WeatherApp"
+            val descriptionText = "WeatherApp Notifications"
+            val importance =
+                NotificationManager.IMPORTANCE_DEFAULT
+
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    name,
+                    importance
+                ).apply {
+                    description = descriptionText
+                }
+
+            val notificationManager =
+                this.applicationContext
+                    .getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                    ) as NotificationManager
+
+            notificationManager.createNotificationChannel(
+                channel
+            )
+        }
+    }
+}

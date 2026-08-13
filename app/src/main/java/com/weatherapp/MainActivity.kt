@@ -35,7 +35,21 @@ import com.weatherapp.viewmodel.MainViewModelFactory
 import com.weatherapp.api.WeatherService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.LaunchedEffect
+import com.weatherapp.monitor.ForecastMonitor
+import android.content.Intent
+import androidx.compose.runtime.DisposableEffect
+import androidx.core.util.Consumer
 
+private fun handleNotificationIntent(
+    intent: Intent,
+    viewModel: MainViewModel
+) {
+    intent.getStringExtra("city")?.let { cityName ->
+
+        viewModel.city = cityName
+        viewModel.page = Route.Home
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
@@ -46,13 +60,36 @@ class MainActivity : ComponentActivity() {
         setContent {
             val fbDB = remember { FBDatabase() }
             val weatherService = remember { WeatherService(this@MainActivity) }
+            val monitor = remember { ForecastMonitor(this@MainActivity) }
 
             val viewModel: MainViewModel = viewModel(
                 factory = MainViewModelFactory(
                     fbDB,
-                    weatherService
+                    weatherService,
+                    monitor
                 )
             )
+
+            handleNotificationIntent(
+                intent = intent,
+                viewModel = viewModel
+            )
+
+            DisposableEffect(Unit) {
+
+                val listener = Consumer<Intent> { intent ->
+
+                    viewModel.city = intent.getStringExtra("city")
+
+                    viewModel.page = Route.Home
+                }
+
+                addOnNewIntentListener(listener)
+
+                onDispose {
+                    removeOnNewIntentListener(listener)
+                }
+            }
 
             val navController = rememberNavController()
             var showDialog by remember { mutableStateOf(false) }
