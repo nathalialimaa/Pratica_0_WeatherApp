@@ -65,6 +65,10 @@ class MainViewModel(
         db.remove(city.toFBCity())
     }
 
+    fun update(city: City) {
+        db.update(city.toFBCity())
+    }
+
     fun addCity(name: String) {
 
         service.getLocation(name) { lat, lng ->

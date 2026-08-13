@@ -34,6 +34,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import com.weatherapp.R
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
 
 @Composable
 fun HomePage(
@@ -41,46 +46,59 @@ fun HomePage(
     viewModel: MainViewModel
 ) {
 
-    Column {
+    val selectedCity = viewModel.city?.let { name ->
+        viewModel.cities.find { it.name == name }
+    }
 
-        if (viewModel.city == null) {
+    if (selectedCity == null) {
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(Color.Blue)
-                    .wrapContentSize(Alignment.Center)
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.Blue)
+                .wrapContentSize(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Text(
-                    text = "Selecione uma cidade!",
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    textAlign = TextAlign.Center,
+                    text = "Selecione uma cidade...",
                     fontSize = 28.sp
                 )
             }
+        }
 
-        } else {
+    } else {
 
-            val weather = viewModel.weather(viewModel.city!!)
+        val weather = viewModel.weather(selectedCity.name)
 
-            Row {
+        Column(
+            modifier = modifier.fillMaxSize()
+        ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 AsyncImage(
-                    model = viewModel.weather(viewModel.city!!).imgUrl,
-                    modifier = modifier.size(140.dp),
+                    model = weather.imgUrl,
+                    modifier = Modifier.size(140.dp),
                     error = painterResource(id = R.drawable.loading),
                     contentDescription = "Imagem"
                 )
 
-                Column {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
 
                     Spacer(modifier = Modifier.size(12.dp))
 
                     Text(
-                        text = viewModel.city!!,
+                        text = selectedCity.name,
                         fontSize = 28.sp
                     )
 
@@ -98,9 +116,30 @@ fun HomePage(
                         fontSize = 22.sp
                     )
                 }
+
+                // SINO DE MONITORAMENTO
+                val icon =
+                    if (selectedCity.isMonitored)
+                        Icons.Filled.Notifications
+                    else
+                        Icons.Outlined.Notifications
+
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Monitorada?",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable {
+                            viewModel.update(
+                                selectedCity.copy(
+                                    isMonitored = !selectedCity.isMonitored
+                                )
+                            )
+                        }
+                )
             }
 
-            viewModel.forecast(viewModel.city!!)?.let { forecasts ->
+            viewModel.forecast(selectedCity.name)?.let { forecasts ->
 
                 LazyColumn {
 
